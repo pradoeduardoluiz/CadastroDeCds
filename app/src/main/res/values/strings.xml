@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">CadastroDeCds</string>
+    <string name="cadCds">Cadastro de Cds</string>
+    <string name="title_activity_add_cd">AddCD</string>
+    <string name="title_activity_view_cd">ViewCD</string>
+</resources>
