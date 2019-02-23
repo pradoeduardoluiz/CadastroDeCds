@@ -2,15 +2,11 @@ package com.appdev.pradoeduardoluiz.cadastrodecds.fragment;
 
 
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
@@ -25,7 +21,6 @@ import com.appdev.pradoeduardoluiz.cadastrodecds.ViewCD;
 import com.appdev.pradoeduardoluiz.cadastrodecds.adapter.CdAdapter;
 import com.appdev.pradoeduardoluiz.cadastrodecds.domain.Cd;
 import com.appdev.pradoeduardoluiz.cadastrodecds.domain.DataStore;
-import com.appdev.pradoeduardoluiz.cadastrodecds.interfaces.RecyclerViewOnClickListenerHack;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,7 +40,7 @@ public class CdFragment extends Fragment{
 
         recyclerView = view.findViewById(R.id.rvCds);
         recyclerView.setHasFixedSize(true);
-        adapter = new CdAdapter(DataStore.sharedInstance().getCds());
+        adapter = new CdAdapter(getActivity());
         recyclerView.setAdapter(adapter);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -62,14 +57,14 @@ public class CdFragment extends Fragment{
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-                Cd cd = DataStore.sharedInstance().getCd(position);
+                Cd cd = DataStore.sharedInstance(getActivity()).getCd(position);
 
                 builder.setMessage("Deseja realmente excluir o album " + cd.getNome() + "?")
                         .setPositiveButton("Sim",new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                DataStore.sharedInstance().removeCd(position);
-                                adapter.notifyItemRemoved(position);
+                                DataStore.sharedInstance(getActivity()).removeCd(position);
+                                adapter.notifyDataSetChanged();
                             }
                         })
                         .setNegativeButton("Não", new DialogInterface.OnClickListener() {

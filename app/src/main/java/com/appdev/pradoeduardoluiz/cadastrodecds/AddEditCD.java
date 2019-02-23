@@ -36,7 +36,7 @@ public class AddEditCD extends AppCompatActivity {
         if(position == -1) {
             cd = new Cd();
         }else{
-            cd = DataStore.sharedInstance().getCd(position);
+            cd = DataStore.sharedInstance(this).getCd(position);
             txtAlbum.setText(cd.getNome());
             txtArtista.setText(cd.getArtista());
             txtAno.setText(String.valueOf(cd.getAno()));
@@ -72,9 +72,9 @@ public class AddEditCD extends AppCompatActivity {
                 Integer.parseInt(txtAno.getText().toString()));
 
         if(position == -1){
-            DataStore.sharedInstance().AddCd(cd);
+            DataStore.sharedInstance(this).AddCd(cd);
         }else{
-            DataStore.sharedInstance().editCd(cd,position);
+            DataStore.sharedInstance(this).editCd(cd,position);
         }
 
         LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);

@@ -2,13 +2,16 @@ package com.appdev.pradoeduardoluiz.cadastrodecds;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -25,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        loadConfig();
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(R.string.cadCds);
@@ -51,7 +56,27 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                         break;
                     case R.id.nav_limpar:
-                        DataStore.sharedInstance().clearCds();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setMessage("Deseja realmente resetar aplicação? Atenção os " +
+                                "dados serão restaurados como se você estive acessando a aplicação " +
+                                "pela primeira vez!")
+                                .setPositiveButton("Sim",new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        resetApplication();
+                                        loadConfig();
+                                        fragment.notifyDataSetChanged();
+                                    }
+                                })
+                                .setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                }).show();
+
+
+                        DataStore.sharedInstance(MainActivity.this).clearCds();
                         fragment.notifyDataSetChanged();
                         break;
                 }
@@ -62,6 +87,29 @@ public class MainActivity extends AppCompatActivity {
 
         LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
         broadcastManager.registerReceiver(updateData, new IntentFilter("updateData"));
+    }
+
+    private void resetApplication() {
+        SharedPreferences preferences = getSharedPreferences("textFile_preferences", MODE_PRIVATE);
+        boolean firstAccess = preferences.getBoolean("firstAccess", true);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("firstAccess", true);
+        editor.commit();
+    }
+
+    private void loadConfig() {
+
+        SharedPreferences preferences = getSharedPreferences("textFile_preferences", MODE_PRIVATE);
+        boolean firstAccess = preferences.getBoolean("firstAccess", true);
+
+        if(firstAccess){
+            DataStore.sharedInstance(this).getInitialData();
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("firstAccess", false);
+            editor.commit();
+        }
+
+
     }
 
     private BroadcastReceiver updateData = new BroadcastReceiver() {
@@ -76,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         if(isFinishing()){
+            DataStore.sharedInstance(this).commit();
             LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
             broadcastManager.unregisterReceiver(updateData);
         }

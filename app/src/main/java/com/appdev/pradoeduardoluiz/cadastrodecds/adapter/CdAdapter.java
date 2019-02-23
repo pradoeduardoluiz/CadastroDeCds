@@ -1,6 +1,8 @@
 package com.appdev.pradoeduardoluiz.cadastrodecds.adapter;
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,17 +14,20 @@ import com.appdev.pradoeduardoluiz.cadastrodecds.R;
 import java.util.List;
 
 import com.appdev.pradoeduardoluiz.cadastrodecds.domain.Cd;
+import com.appdev.pradoeduardoluiz.cadastrodecds.domain.DataStore;
 
 public class CdAdapter extends RecyclerView.Adapter<CdAdapter.CdHolder> {
 
     private List<Cd> cds = null;
     private final int UPDATECDS = 2;
+    private Activity activity;
 
-    public CdAdapter(List<Cd> cds) {
-        this.cds = cds;
+    public CdAdapter(Activity activity){
+        this.activity = activity;
+        cds = DataStore.sharedInstance(activity).getCds();
     }
 
-    @NonNull
+
     @Override
     public CdHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
@@ -45,7 +50,6 @@ public class CdAdapter extends RecyclerView.Adapter<CdAdapter.CdHolder> {
     public int getItemCount() {
         return cds.size();
     }
-
 
     public class CdHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 

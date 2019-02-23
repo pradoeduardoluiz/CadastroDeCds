@@ -31,7 +31,7 @@ public class ViewCD extends AppCompatActivity {
         position = getIntent().getIntExtra("position", -1);
 
         if (position != -1){
-            cd = DataStore.sharedInstance().getCd(position);
+            cd = DataStore.sharedInstance(this).getCd(position);
 
             txtAlbum.setText(cd.getNome());
             txtArtista.setText(cd.getArtista());
