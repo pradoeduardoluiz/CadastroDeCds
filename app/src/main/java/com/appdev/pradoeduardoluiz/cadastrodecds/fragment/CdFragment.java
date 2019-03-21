@@ -125,6 +125,9 @@ public class CdFragment extends Fragment{
         return view;
     }
 
+    public CdAdapter getAdapter() {
+        return adapter;
+    }
 
     public void notifyDataSetChanged(){
         adapter.notifyDataSetChanged();
