@@ -1,6 +1,10 @@
 package com.appdev.pradoeduardoluiz.cadastrodecds.domain;
 
 import android.app.Activity;
+import android.content.Context;
+import android.widget.Toast;
+
+import com.appdev.pradoeduardoluiz.cadastrodecds.persist.DataBase;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -19,35 +23,22 @@ public class DataStore {
 
     private static DataStore instance = null;
     private List<Cd> cds = null;
-    private static Activity activity;
+    private DataBase dataBase;
+    private Context context;
 
 
-    public static DataStore sharedInstance(Activity act){
+    public static DataStore sharedInstance(){
         if (instance == null){
-            activity = act;
             instance = new DataStore();
         }
         return instance;
     }
 
-
-    public DataStore() {
-
-        cds = new ArrayList<Cd>();
-        readRegister();
-
-        //cds.add(new Cd("All hope is gone", "Slipknot", 2008));
-        //cds.add(new Cd("DESIGN YOUR UNIVERSE", "EPICA", 2009));
-        //cds.add(new Cd("Endorama", "Kreator", 1999));
-        //cds.add(new Cd("Fear of the Dark", "Iron Maiden", 1992));
-        //cds.add(new Cd("Killer be Killed", "Killer be Killed", 2013));
-        //cds.add(new Cd("Wasting Ligth", "Foo Figthers", 2011));
-        //cds.add(new Cd("The Way Of The Fist", "Five Finger Death Punch", 2007));
-        //cds.add(new Cd("Alpha Noir", "Moonspell", 2012));
-        //cds.add(new Cd("Karma and Effect", "Seether", 2005));
-
+    public void setContext(Context context){
+        this.context = context;
+        dataBase = new DataBase(context);
+        cds = dataBase.list();
     }
-
 
     public List<Cd> getCds() {
         return cds;
@@ -62,31 +53,47 @@ public class DataStore {
     }
 
     public void AddCd(Cd cd){
-        cds.add(cd);
-        if(writeRegister(cds)){
-            readRegister();
+
+        if(dataBase.insert(cd)){
+            cds.add(cd);
+        }else{
+            showError("Ocorreu um erro ao inserir cd " + cd.getNome());
         }
+
+    }
+
+    private void showError(String msg) {
+        Toast.makeText(
+                context,
+                msg,
+                Toast.LENGTH_SHORT).show();
     }
 
     public void editCd(Cd cd, int position){
-        cds.set(position, cd);
-        if(writeRegister(cds)){
-            readRegister();
+
+        if(dataBase.update(cd)){
+            cds.set(position, cd);
+        }else{
+            showError("Ocorreu um erro ao editar cd " + cd.getNome());
         }
+
+        cds.set(position, cd);
     }
 
     public void removeCd(int position){
-        cds.remove(position);
-        if(writeRegister(cds)){
-            readRegister();
+
+        if(dataBase.delete(cds.get(position))){
+            cds.remove(position);
         }
+
     }
 
     public void clearCds(){
-        cds.clear();
-        if(writeRegister(cds)){
-            readRegister();
+
+        for (int i = 0; i < cds.size(); i++) {
+            removeCd(i);
         }
+        cds.clear();
     }
 
 
@@ -103,79 +110,6 @@ public class DataStore {
         cds.add(new Cd("Alpha Noir", "Moonspell", 2012));
         cds.add(new Cd("Karma and Effect", "Seether", 2005));
         
-        if(writeRegister(cds)){
-            readRegister();
-        }
-
-    }
-
-    public void commit(){
-        writeRegister(cds);
-    }
-
-
-    private boolean writeRegister(List<Cd> cds) {
-
-        try {
-            OutputStream outputStream = activity.openFileOutput("db.txt", MODE_PRIVATE);
-            OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream);
-
-            for (Cd cd:cds) {
-
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(cd.getNome() + ";");
-                stringBuilder.append(cd.getArtista() + ";");
-                stringBuilder.append(cd.getAno() + ";");
-                stringBuilder.append("\n");
-
-                streamWriter.write(stringBuilder.toString());
-                streamWriter.flush();
-            }
-            streamWriter.close();
-            outputStream.close();
-            return true;
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    private void readRegister() {
-
-        cds.clear();
-
-        try {
-            InputStream inputStream = activity.openFileInput("db.txt");
-            InputStreamReader streamReader = new InputStreamReader(inputStream);
-            BufferedReader reader = new BufferedReader(streamReader);
-
-            String str = "";
-
-            while ((str = reader.readLine()) != null){
-
-                Cd cd = new Cd();
-                String array[] = str.split(";");
-
-                cd.setNome(array[0]);
-                cd.setArtista(array[1]);
-                cd.setAno(Integer.parseInt(array[2]));
-
-                cds.add(cd);
-            }
-
-            reader.close();
-            streamReader.close();
-            inputStream.close();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
     }
 

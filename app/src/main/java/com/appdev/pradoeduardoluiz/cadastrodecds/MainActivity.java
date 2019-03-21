@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        DataStore.sharedInstance().setContext(this);
+
 
         loadConfig();
 
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                                 }).show();
 
 
-                        DataStore.sharedInstance(MainActivity.this).clearCds();
+                        DataStore.sharedInstance().clearCds();
                         fragment.notifyDataSetChanged();
                         break;
                 }
@@ -103,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         boolean firstAccess = preferences.getBoolean("firstAccess", true);
 
         if(firstAccess){
-            DataStore.sharedInstance(this).getInitialData();
+            DataStore.sharedInstance().getInitialData();
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean("firstAccess", false);
             editor.commit();
@@ -124,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         if(isFinishing()){
-            DataStore.sharedInstance(this).commit();
             LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
             broadcastManager.unregisterReceiver(updateData);
         }

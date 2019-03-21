@@ -57,13 +57,13 @@ public class CdFragment extends Fragment{
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-                Cd cd = DataStore.sharedInstance(getActivity()).getCd(position);
+                Cd cd = DataStore.sharedInstance().getCd(position);
 
                 builder.setMessage("Deseja realmente excluir o album " + cd.getNome() + "?")
                         .setPositiveButton("Sim",new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                DataStore.sharedInstance(getActivity()).removeCd(position);
+                                DataStore.sharedInstance().removeCd(position);
                                 adapter.notifyDataSetChanged();
                             }
                         })
