@@ -20,6 +20,7 @@ public class DataBase {
     private final String COLUMN_NAME = "nome";
     private final String COLUMN_ARTIST = "artista";
     private final String COLUMN_YEAR = "ano";
+    private final String COLUMN_IMAGEPATH = "imagePath";
 
     public DataBase(Context context){
 
@@ -33,6 +34,7 @@ public class DataBase {
         values.put(COLUMN_NAME, cd.getNome());
         values.put(COLUMN_ARTIST, cd.getArtista());
         values.put(COLUMN_YEAR, cd.getAno());
+        values.put(COLUMN_IMAGEPATH, cd.getImagePath());
 
         long id = db.insert(TABLE_CD, null, values);
 
@@ -48,6 +50,7 @@ public class DataBase {
         values.put(COLUMN_NAME, cd.getNome());
         values.put(COLUMN_ARTIST, cd.getArtista());
         values.put(COLUMN_YEAR, cd.getAno());
+        values.put(COLUMN_IMAGEPATH, cd.getImagePath());
 
         int count = db.update(TABLE_CD, values, "_id = ?", new String[]{""+cd.getId()});
 
@@ -69,7 +72,7 @@ public class DataBase {
 
     public Cd get(long id){
 
-        String[] columns = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_ARTIST, COLUMN_YEAR};
+        String[] columns = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_ARTIST, COLUMN_YEAR, COLUMN_IMAGEPATH};
 
         Cursor cursor = db.query(TABLE_CD, columns, COLUMN_ID + " = ?",
                 new String[]{""+id},
@@ -82,6 +85,7 @@ public class DataBase {
             cd.setNome(cursor.getString(1));
             cd.setArtista(cursor.getString(2));
             cd.setAno(cursor.getInt(3));
+            cd.setImagePath(cursor.getString(4));
             return cd;
 
         }else {
@@ -93,7 +97,7 @@ public class DataBase {
 
         List<Cd> list = new ArrayList<>();
 
-        String[] columns = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_ARTIST, COLUMN_YEAR};
+        String[] columns = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_ARTIST, COLUMN_YEAR, COLUMN_IMAGEPATH};
 
         Cursor cursor = db.query(TABLE_CD, columns, null, null,
                 null, null, COLUMN_NAME + " ASC ");
@@ -106,6 +110,7 @@ public class DataBase {
                 cd.setNome(cursor.getString(1));
                 cd.setArtista(cursor.getString(2));
                 cd.setAno(cursor.getInt(3));
+                cd.setImagePath(cursor.getString(4));
                 list.add(cd);
 
             }while (cursor.moveToNext());

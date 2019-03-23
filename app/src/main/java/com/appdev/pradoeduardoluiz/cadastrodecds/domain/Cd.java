@@ -13,11 +13,19 @@ public class Cd implements Serializable {
         this.artista = artista;
         this.ano = ano;
     }
+    public Cd(String nome, String artista, int ano, String imagePath){
+        this.nome = nome;
+        this.artista = artista;
+        this.ano = ano;
+        this.imagePath = imagePath;
+    }
 
     private long id;
     private String nome;
     private String artista;
     private int ano;
+    private String imagePath;
+
 
     public long getId() {
         return id;
@@ -49,6 +57,14 @@ public class Cd implements Serializable {
 
     public void setAno(int ano) {
         this.ano = ano;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     @Override

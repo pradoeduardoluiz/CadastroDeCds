@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DataBaseCore extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "db_cds";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 3;
 
     public DataBaseCore(Context context){
         super(context, DB_NAME, null, DB_VERSION);
@@ -20,13 +20,15 @@ public class DataBaseCore extends SQLiteOpenHelper {
                 "_id integer PRIMARY KEY AUTOINCREMENT," +
                 "nome text NOT NULL, " +
                 "artista text NOT NULL, " +
-                "ano integer NOT NULL);";
+                "ano integer NOT NULL, " +
+                "imagePath text );";
         db.execSQL(query);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         String query = "DROP TABLE cds;";
+        db.execSQL(query);
         onCreate(db);
     }
 }

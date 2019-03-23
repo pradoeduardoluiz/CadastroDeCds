@@ -1,21 +1,27 @@
 package com.appdev.pradoeduardoluiz.cadastrodecds;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.appdev.pradoeduardoluiz.cadastrodecds.domain.Cd;
 import com.appdev.pradoeduardoluiz.cadastrodecds.domain.DataStore;
+
+import java.io.File;
 
 public class ViewCD extends AppCompatActivity {
 
     private TextView txtAlbum;
     private TextView txtArtista;
     private TextView txtAno;
+    private TextView txtImagePath;
+    private ImageView imageViewCd;
     private int position = 1;
     private Cd cd;
 
@@ -27,6 +33,8 @@ public class ViewCD extends AppCompatActivity {
         txtAlbum = (TextView) findViewById(R.id.txtAlbum);
         txtArtista = findViewById(R.id.txtArtista);
         txtAno = findViewById(R.id.txtAno);
+        txtImagePath = findViewById(R.id.txtImagePath);
+        imageViewCd = findViewById(R.id.imgViewCD);
 
         position = getIntent().getIntExtra("position", -1);
 
@@ -36,6 +44,9 @@ public class ViewCD extends AppCompatActivity {
             txtAlbum.setText(cd.getNome());
             txtArtista.setText(cd.getArtista());
             txtAno.setText(String.valueOf(cd.getAno()));
+            txtImagePath.setText(cd.getImagePath());
+            File imgFile = new File(cd.getImagePath());
+            imageViewCd.setImageURI(Uri.fromFile(imgFile));
 
         }
 
